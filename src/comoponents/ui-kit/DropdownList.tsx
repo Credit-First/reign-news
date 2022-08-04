@@ -1,31 +1,63 @@
-import { useState } from 'react';
-
-interface Props {
-  options: any[];
-  selected: number;
-  selectionChanged?: (index: number) => void
+import { useCallback, useState } from 'react';
+import AnyWhereClick from './AnyWhereClick';
+export interface DropDownOption {
+  value: string;
+  label?: string;
+  icon?: string;
 }
 
-function Option({ label, onClick }: any) {
-  return <div className="cursor-pointer flex items-center font-roboto text-gray-200 px-2" onClick={onClick}>
-    <img className="mr-2" src={`/icons/${label.toLowerCase()}.png`} alt={label}/>
-    <span>{label}</span>
-  </div>
+interface OptionProps {
+  item: DropDownOption;
+}
+interface Props {
+  options: DropDownOption[];
+  selected: number;
+  selectionChanged?: (index: number) => void;
+}
+
+function Option({ item }: OptionProps) {
+  return (
+    <div className="cursor-pointer flex items-center font-roboto text-gray-200 px-2">
+      {item.icon && <img className="mr-2" src={item.icon} alt={item.value} />}
+      <span>{item.label || item.value}</span>
+    </div>
+  );
 }
 
 export default function DropdownList({ options, selected, selectionChanged }: Props) {
   const [opened, setOpened] = useState(false);
-  return <div className="w-60">
-    <div className="border border-gray-100 rounded py-1">
-      <Option label={options[selected]} onClick={() => setOpened(!opened)}/>
-    </div>
-    {opened && <div className="w-60 absolute bg-white">{options.map((option, index) =>
-      <div key={index} className="py-2">
-        <Option label={option} onClick={() => {
-          selectionChanged && selectionChanged(index);
-          setOpened(false);
-        }}/>
-      </div>)}
-    </div>}
-  </div>
+  const handleClose = useCallback(() => setOpened(false), []);
+
+  return (
+    <AnyWhereClick onClick={handleClose}>
+      <div className="w-60">
+        <div className="flex justify-between border border-gray-100 rounded p-2" onClick={() => setOpened(!opened)}>
+          <Option item={options[selected]} />
+          <div className={'flex-0 flex items-center justify-center ' + (opened ? 'rotate-180' : 'rotate-0')}>
+            <img className="w-4 h-4" src="/icons/arrow.png" />
+          </div>
+        </div>
+        {opened && (
+          <div className="w-60 absolute bg-white border-b-2 border-gray-800">
+            {options.map((option, index) => {
+              if (option.value) {
+                return (
+                  <div
+                    key={index}
+                    className="py-4 p-2"
+                    onClick={() => {
+                      selectionChanged && selectionChanged(index);
+                      setOpened(false);
+                    }}
+                  >
+                    <Option item={option} />
+                  </div>
+                );
+              }
+            })}
+          </div>
+        )}
+      </div>
+    </AnyWhereClick>
+  );
 }

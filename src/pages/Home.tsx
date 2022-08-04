@@ -1,69 +1,121 @@
-import { useCallback, useEffect, useState } from 'react';
-import { fetchNews, getFavNews, INews } from '../api.service';
+import { useEffect, useState } from 'react';
+import { fetchNews, INews } from '../api.service';
 import NewsCard from '../comoponents/NewsCard';
-import DropdownList from '../comoponents/ui-kit/DropdownList';
+import DropdownList, { DropDownOption } from '../comoponents/ui-kit/DropdownList';
 import Pagination from '../comoponents/ui-kit/Pagination';
-import TabControl from "../comoponents/ui-kit/TabControl";
+import TabControl from '../comoponents/ui-kit/TabControl';
 import { FavType } from '../enums';
-import { addToStarList, getNewsCategory, getStarList, removeFromStarList, setNewsCategory } from '../local-storage.service';
+import {
+  addToStarList,
+  getNewsCategoryIndex,
+  getStarList,
+  getStarListByCategory,
+  removeFromStarList,
+  setNewsCategoryIndex,
+} from '../local-storage.service';
 
-const newsCategories = ["Angular", "React", "Vue"];
+const newsCategories: DropDownOption[] = [
+  { value: '', label: 'Select Your News' },
+  { value: 'Angular', icon: `/icons/angular.png` },
+  { value: 'React', icon: `/icons/react.png` },
+  { value: 'Vue', icon: `/icons/vue.png` },
+];
+const perPage = 20;
 
 export default function Home() {
-  const [tab, setTab] = useState(FavType.All);
-  const [category, setCategory] = useState(newsCategories.indexOf(getNewsCategory()));
-  const [starList, setStarList] = useState(getStarList());
   const [page, setPage] = useState(0);
-
+  const [maxPage, setMaxPage] = useState(1);
+  const [tab, setTab] = useState(FavType.All);
   const [news, setNews] = useState<INews[]>([]);
-  useEffect(() => {
-    if (tab === FavType.All) {
-      fetchNews(newsCategories[category], page).then(setNews);
-    } else {
-      getFavNews(newsCategories[category]).then(setNews);
-    }
-  }, [category, page, tab]);
+  const [loading, setLoading] = useState(false);
+  const [starList, setStarList] = useState(getStarList());
+  const [categoryIndex, setCategoryIndex] = useState<number>(getNewsCategoryIndex());
 
-  useEffect(() => {
-    setNewsCategory(newsCategories[category]);
-  }, [category]);
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [page]);
-
-  const star = useCallback((id: string, starred: boolean) => {
+  const handleStar = (item: INews, starred: boolean) => () => {
     let list;
-    if (starred) {
-      list = addToStarList(id);
+    if (!starred) {
+      list = addToStarList(item);
     } else {
-      list = removeFromStarList(id);
+      list = removeFromStarList(item);
     }
+    console.log(list, starred);
     setStarList(list);
-  }, []);
+  };
 
-  return <div className="container mx-auto">
-    <header className="px-3 pt-11 pb-10 bg-gradient-to-b from-gray-900 to-white border-b border-slate-50/10">
-      <h2 className="font-baskerville text-3xl text-gray-300">HACKER NEWS</h2>
-    </header>
-    <div className="p-3">
-      <div className="flex justify-center pt-16 pb-14">
-        <TabControl labels={['All', 'My faves']} selected={tab} tabChanged={setTab}/>
+  useEffect(() => {
+    setNewsCategoryIndex(categoryIndex);
+  }, [categoryIndex]);
+
+  useEffect(() => {
+    setPage(0);
+  }, [tab]);
+
+  useEffect(() => {
+    setLoading(true);
+
+    if (categoryIndex === 0) {
+      setNews([]);
+      setMaxPage(1);
+      setLoading(false);
+      return;
+    }
+    if (tab === FavType.All) {
+      fetchNews(newsCategories[categoryIndex].value, page, perPage)
+        .then(({ data, info: { maxPage } }) => {
+          setNews(data);
+          setMaxPage(maxPage);
+          setLoading(false);
+        })
+        .catch(e => {
+          setNews([]);
+          setMaxPage(1);
+          setLoading(false);
+        });
+    } else {
+      const {
+        data,
+        info: { maxPage },
+      } = getStarListByCategory(newsCategories[categoryIndex].value, page, perPage);
+      setNews(data);
+      setMaxPage(maxPage);
+      setLoading(false);
+    }
+  }, [categoryIndex, page, tab]);
+
+  return (
+    <div className="mx-auto">
+      <header className="px-10 lg:px-40 pt-11 pb-10 bg-gradient-to-b from-gray-900 to-white border-b border-slate-50/10">
+        <h2 className="font-baskerville text-3xl text-gray-300">HACKER NEWS</h2>
+      </header>
+      <div className="px-10 lg:px-40">
+        <div className="flex justify-center pt-16 pb-14">
+          <TabControl labels={['All', 'My faves']} selected={tab} tabChanged={setTab} />
+        </div>
+        <div className="mb-9">
+          <DropdownList options={newsCategories} selected={categoryIndex} selectionChanged={setCategoryIndex} />
+        </div>
+        {loading ? (
+          <div className="text-center">Loading ...</div>
+        ) : (
+          <>
+            {news.length > 0 ? (
+              <div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-7 gap-y-6">
+                  {news.map(item => {
+                    const starred = !!starList.find(_item => _item.id === item.id);
+                    return (
+                      <NewsCard key={item.id} {...item} starred={starred} toggleStar={handleStar(item, starred)} />
+                    );
+                  })}
+                </div>
+              </div>
+            ) : (
+              <div className="text-center">No data display</div>
+            )}
+          </>
+        )}
+        <Pagination className="mt-20" page={page} maxPage={maxPage} pageChanged={setPage} />
       </div>
-      <div className="mb-9">
-        <DropdownList
-          options={newsCategories}
-          selected={category}
-          selectionChanged={setCategory}
-        />
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-7 gap-y-6">
-        {news.map((item, index) => {
-          const starred = starList.indexOf(item.id) >= 0;
-          return <NewsCard key={item.id} {...item} starred={starred} toggleStar={() => star(item.id, !starred) }/>;
-        })}
-      </div>
-      {tab === 0 && <Pagination page={page} pageChanged={setPage}/>}
     </div>
-  </div>
+  );
 }

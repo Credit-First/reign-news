@@ -1,20 +1,18 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: [
-    "./src/**/*.{js,jsx,ts,tsx}",
-  ],
+  content: ['./src/**/*.{js,jsx,ts,tsx}'],
   theme: {
     fontFamily: {
       baskerville: ['Libre Baskerville', 'sans-serif'],
       roboto: ['Roboto', 'sans-serif'],
     },
     fontSize: {
-      'xs': '.75rem',
-      'sm': '.875rem',
-      'tiny': '.875rem',
-      'base': '1rem',
-      'lg': '1.125rem',
-      'xl': '1.25rem',
+      xs: '.75rem',
+      sm: '.875rem',
+      tiny: '.875rem',
+      base: '1rem',
+      lg: '1.125rem',
+      xl: '1.25rem',
       '2xl': '1.5rem',
       '3xl': '1.75rem',
       '4xl': '2.25rem',
@@ -35,8 +33,8 @@ module.exports = {
         'gray-800': '#d6d6d6',
         'gray-900': '#ececec',
         primary: '#1797ff',
-      }
+      },
     },
   },
   plugins: [],
-}
+};

@@ -1,40 +1,49 @@
-const START_LIST_KEY = 'star-list';
-const NEWS_CATEGORY_KEY = 'news-category';
+import { IInfo, INews } from './api.service';
 
-export function getStarList(): string[] {
-  const rawList = localStorage.getItem(START_LIST_KEY) || '[]';
+const STARRED_LIST = 'starred-list';
+const SELECTED_NEWS_CATEGORY_KEY = 'news-category';
+
+export function getStarList(): INews[] {
+  const rawList = localStorage.getItem(STARRED_LIST) || '[]';
   return JSON.parse(rawList);
 }
 
-export function putStarList(list: string[]) {
-  localStorage.setItem(START_LIST_KEY, JSON.stringify(list));
+export function getStarListByCategory(category: string, page: number, perPage: number): { data: INews[]; info: IInfo } {
+  console.log(page, perPage, page * perPage);
+  const list = getStarList();
+  const maxPage = Math.ceil(list.length / perPage);
+  page = Math.min(maxPage, page);
+  const data = list.filter(item => item.category === category);
+  const start = page * perPage;
+  const end = start + perPage;
+  return { data: data.slice(start, end), info: { maxPage } };
 }
 
-export function addToStarList(id: string): string[] {
+export function putStarList(list: INews[]) {
+  localStorage.setItem(STARRED_LIST, JSON.stringify(list));
+}
+
+export function addToStarList(item: INews): INews[] {
   const list = getStarList();
-  if (list.indexOf(id) >= 0) {
+  if (list.find(_item => _item.id === item.id)) {
     return list;
   }
-  list.push(id);
+  list.push(item);
   putStarList(list);
   return list;
 }
 
-export function removeFromStarList(id: string): string[] {
-  const list = getStarList();
-  const i = list.indexOf(id);
-  if (i === -1) {
-    return list;
-  }
-  list.splice(i, 1);
+export function removeFromStarList(item: INews): INews[] {
+  const list = getStarList().filter(_item => _item.id !== item.id);
   putStarList(list);
   return list;
 }
 
-export function getNewsCategory(): string {
-  return localStorage.getItem(NEWS_CATEGORY_KEY) || 'Angular';
+export function getNewsCategoryIndex(): number {
+  const rawIndex = localStorage.getItem(SELECTED_NEWS_CATEGORY_KEY) || '0';
+  return parseInt(rawIndex);
 }
 
-export function setNewsCategory(category: string): void {
-  localStorage.setItem(NEWS_CATEGORY_KEY, category);
+export function setNewsCategoryIndex(categoryIndex: number): void {
+  localStorage.setItem(SELECTED_NEWS_CATEGORY_KEY, `${categoryIndex}`);
 }
