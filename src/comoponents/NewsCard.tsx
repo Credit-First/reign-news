@@ -38,7 +38,7 @@ export default function NewsCard({ author, title, url, createdAt, starred, toggl
       </div>
       <div onClick={e => e.stopPropagation()}>
         <img
-          className="cursor-pointer hover:scale-110 transition-all group-hover:opacity-40"
+          className="cursor-pointer hover:scale-125 transition-all group-hover:opacity-40"
           onClick={toggleStar}
           src={`/icons/${starred ? 'star-filled' : 'star'}.png`}
           alt="star"
