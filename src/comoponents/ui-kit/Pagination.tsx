@@ -32,7 +32,7 @@ export default function Pagination({ className, page, pageChanged, maxPage }: Pr
   }, [page]);
 
   return (
-    <div className={className + ' flex justify-center items-center'}>
+    <div className={className + ' flex justify-center items-center text-tiny'}>
       <div
         className="cursor-pointer w-12 h-8 flex justify-center items-center font-roboto text-gray-500 text-center border rounded border-gray-800 m-1 md:m-2 "
         onClick={handlePreClick}

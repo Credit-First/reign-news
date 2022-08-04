@@ -114,7 +114,7 @@ export default function Home() {
             )}
           </>
         )}
-        <Pagination className="mt-20" page={page} maxPage={maxPage} pageChanged={setPage} />
+        <Pagination className="my-20" page={page} maxPage={maxPage} pageChanged={setPage} />
       </div>
     </div>
   );
