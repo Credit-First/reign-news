@@ -17,13 +17,14 @@ export function fetchNews(category: string, page = 0, perPage = 20): Promise<{ d
     fetch(url)
       .then(data => data.json())
       .then(data => {
+        console.log(data);
         const list: INews[] = data.hits.map(
           (item: {
-            story_title: any;
-            author: any;
+            story_title: string;
+            author: string;
             created_at: string | number | Date;
-            story_url: any;
-            story_id: any;
+            story_url: string;
+            story_id: string | number;
           }) => ({
             title: item.story_title,
             author: item.author,
