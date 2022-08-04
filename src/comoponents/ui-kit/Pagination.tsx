@@ -1,5 +1,7 @@
 import { useCallback } from 'react';
+import { isMobile } from 'react-device-detect';
 import { range } from '../../utils';
+import 'font-awesome/css/font-awesome.min.css';
 
 interface Props {
   className: string;
@@ -9,7 +11,7 @@ interface Props {
 }
 
 export default function Pagination({ className, page, pageChanged, maxPage }: Props) {
-  const pageDiff = 4;
+  const pageDiff = isMobile ? 2 : 4;
   const min = Math.max(0, page - pageDiff);
   const max = Math.min(page + pageDiff, maxPage - 1);
   const pages = range(min, max);
@@ -34,10 +36,10 @@ export default function Pagination({ className, page, pageChanged, maxPage }: Pr
   return (
     <div className={className + ' flex justify-center items-center text-tiny'}>
       <div
-        className="cursor-pointer w-12 h-8 flex justify-center items-center font-roboto text-gray-500 text-center border rounded border-gray-800 m-1 md:m-2 "
+        className="cursor-pointer w-8 h-8 flex justify-center items-center font-roboto text-gray-500 text-center border rounded border-gray-800 m-1 md:m-2 "
         onClick={handlePreClick}
       >
-        prev
+        <i className="fa fa-angle-left"></i>
       </div>
       {pages.map(p => (
         <div
@@ -52,10 +54,10 @@ export default function Pagination({ className, page, pageChanged, maxPage }: Pr
         </div>
       ))}
       <div
-        className="cursor-pointer w-12 h-8 flex justify-center items-center font-roboto text-gray-500 text-center border rounded border-gray-800 m-1 md:m-2 "
+        className="cursor-pointer w-8 h-8 flex justify-center items-center font-roboto text-gray-500 text-center border rounded border-gray-800 m-1 md:m-2 "
         onClick={handleNextClick}
       >
-        next
+        <i className="fa fa-angle-right"></i>
       </div>
     </div>
   );

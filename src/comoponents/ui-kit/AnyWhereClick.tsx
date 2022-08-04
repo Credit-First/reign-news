@@ -13,7 +13,7 @@ export default function AnyWhereClick({ onClick, children }: Props) {
     };
   }, [onClick]);
   return (
-    <div style={{ width: 0 }} onClick={e => e.stopPropagation()}>
+    <div className="w-full sm:w-0" onClick={e => e.stopPropagation()}>
       {children}
     </div>
   );

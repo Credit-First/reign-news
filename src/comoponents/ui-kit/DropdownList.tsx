@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react';
 import AnyWhereClick from './AnyWhereClick';
+import 'font-awesome/css/font-awesome.min.css';
 export interface DropDownOption {
   value: string;
   label?: string;
@@ -30,15 +31,15 @@ export default function DropdownList({ options, selected, selectionChanged }: Pr
 
   return (
     <AnyWhereClick onClick={handleClose}>
-      <div className="w-60">
+      <div className="relative w-full sm:w-60">
         <div className="flex justify-between border border-gray-100 rounded p-2" onClick={() => setOpened(!opened)}>
           <Option item={options[selected]} />
-          <div className={'flex-0 flex items-center justify-center ' + (opened ? 'rotate-180' : 'rotate-0')}>
-            <img className="w-4 h-4" src="/icons/arrow.png" />
+          <div className="flex-0 flex items-center justify-center text-lg">
+            {opened ? <i className="fa fa-angle-up"></i> : <i className="fa fa-angle-down"></i>}
           </div>
         </div>
         {opened && (
-          <div className="w-60 absolute bg-white border-b-2 border-gray-800">
+          <div className="w-full sm:w-60 absolute bg-white border-b-2 border-gray-800">
             {options.map((option, index) => {
               if (option.value) {
                 return (
