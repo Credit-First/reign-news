@@ -1,22 +1,36 @@
 import { useCallback, useEffect, useState } from 'react';
-import { fetchNews, INews } from '../api.service';
+import { fetchNews, getFavNews, INews } from '../api.service';
 import NewsCard from '../comoponents/NewsCard';
 import DropdownList from '../comoponents/ui-kit/DropdownList';
+import Pagination from '../comoponents/ui-kit/Pagination';
 import TabControl from "../comoponents/ui-kit/TabControl";
+import { FavType } from '../enums';
 import { addToStarList, getNewsCategory, getStarList, removeFromStarList, setNewsCategory } from '../local-storage.service';
 
 const newsCategories = ["Angular", "React", "Vue"];
 
 export default function Home() {
-  const [tab, setTab] = useState(0);
+  const [tab, setTab] = useState(FavType.All);
   const [category, setCategory] = useState(newsCategories.indexOf(getNewsCategory()));
   const [starList, setStarList] = useState(getStarList());
+  const [page, setPage] = useState(0);
 
   const [news, setNews] = useState<INews[]>([]);
   useEffect(() => {
+    if (tab === FavType.All) {
+      fetchNews(newsCategories[category], page).then(setNews);
+    } else {
+      getFavNews(newsCategories[category]).then(setNews);
+    }
+  }, [category, page, tab]);
+
+  useEffect(() => {
     setNewsCategory(newsCategories[category]);
-    fetchNews(newsCategories[category]).then(setNews);
   }, [category]);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [page]);
 
   const star = useCallback((id: string, starred: boolean) => {
     let list;
@@ -49,6 +63,7 @@ export default function Home() {
           return <NewsCard key={item.id} {...item} starred={starred} toggleStar={() => star(item.id, !starred) }/>;
         })}
       </div>
+      {tab === 0 && <Pagination page={page} pageChanged={setPage}/>}
     </div>
   </div>
 }
