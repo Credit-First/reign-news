@@ -1,5 +1,3 @@
-import { getStarList } from './local-storage.service';
-
 export interface INews {
   title: string;
   author: string;

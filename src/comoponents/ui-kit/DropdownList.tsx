@@ -55,6 +55,7 @@ export default function DropdownList({ options, selected, selectionChanged }: Pr
                   </div>
                 );
               }
+              return null;
             })}
           </div>
         )}

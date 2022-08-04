@@ -7,7 +7,7 @@ interface Props {
   className: string;
   page: number;
   maxPage: number;
-  pageChanged?: (page: number) => void;
+  pageChanged: (page: number) => void;
 }
 
 export default function Pagination({ className, page, pageChanged, maxPage }: Props) {
@@ -18,20 +18,20 @@ export default function Pagination({ className, page, pageChanged, maxPage }: Pr
 
   const handleClick = useCallback(
     (page: number) => {
-      pageChanged && pageChanged(page);
+      pageChanged(page);
     },
-    [page],
+    [pageChanged],
   );
 
   const handlePreClick = useCallback(() => {
     const prevPage: number = Math.max(0, page - 1);
     handleClick(prevPage);
-  }, [page]);
+  }, [page, handleClick]);
 
   const handleNextClick = useCallback(() => {
     const nextPage: number = Math.min(maxPage, page + 1);
     handleClick(nextPage);
-  }, [page]);
+  }, [page, maxPage, handleClick]);
 
   return (
     <div className={className + ' flex justify-center items-center text-tiny'}>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { fetchNews, INews } from '../api.service';
 import NewsCard from '../comoponents/NewsCard';
 import DropdownList, { DropDownOption } from '../comoponents/ui-kit/DropdownList';
@@ -31,24 +31,9 @@ export default function Home() {
   const [starList, setStarList] = useState(getStarList());
   const [categoryIndex, setCategoryIndex] = useState<number>(getNewsCategoryIndex());
 
-  const handleStar = (item: INews, starred: boolean) => () => {
-    let list;
-    if (!starred) {
-      list = addToStarList(item);
-    } else {
-      list = removeFromStarList(item);
-    }
-    console.log(list, starred);
-    setStarList(list);
-  };
-
   useEffect(() => {
     setNewsCategoryIndex(categoryIndex);
   }, [categoryIndex]);
-
-  useEffect(() => {
-    setPage(0);
-  }, [tab]);
 
   useEffect(() => {
     setLoading(true);
@@ -82,6 +67,22 @@ export default function Home() {
     }
   }, [categoryIndex, page, tab]);
 
+  const handleStar = (item: INews, starred: boolean) => () => {
+    let list;
+    if (!starred) {
+      list = addToStarList(item);
+    } else {
+      list = removeFromStarList(item);
+    }
+    console.log(list, starred);
+    setStarList(list);
+  };
+
+  const handleTabChange = useCallback((tab: number) => {
+    setPage(0);
+    setTab(tab);
+  }, []);
+
   return (
     <div className="mx-auto">
       <header className="px-10 lg:px-40 pt-11 pb-10 bg-gradient-to-b from-gray-900 to-white border-b border-slate-50/10">
@@ -89,7 +90,7 @@ export default function Home() {
       </header>
       <div className="px-10 lg:px-40">
         <div className="flex justify-center pt-16 pb-14">
-          <TabControl labels={['All', 'My faves']} selected={tab} tabChanged={setTab} />
+          <TabControl labels={['All', 'My faves']} selected={tab} tabChanged={handleTabChange} />
         </div>
         <div className="mb-9">
           <DropdownList options={newsCategories} selected={categoryIndex} selectionChanged={setCategoryIndex} />
