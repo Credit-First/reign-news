@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { isMobile } from 'react-device-detect';
 import { range } from '../../utils';
 import 'font-awesome/css/font-awesome.min.css';

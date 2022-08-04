@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { fetchNews, INews } from '../api.service';
 import NewsCard from '../comoponents/NewsCard';
 import DropdownList, { DropDownOption } from '../comoponents/ui-kit/DropdownList';
