@@ -19,7 +19,7 @@ export default function DropdownList({ options, selected, selectionChanged }: Pr
     <div className="border border-gray-100 rounded py-1">
       <Option label={options[selected]} onClick={() => setOpened(!opened)}/>
     </div>
-    {opened && <div className="absolute bg-white">{options.map((option, index) =>
+    {opened && <div className="w-60 absolute bg-white">{options.map((option, index) =>
       <div key={index} className="py-2">
         <Option label={option} onClick={() => {
           selectionChanged && selectionChanged(index);

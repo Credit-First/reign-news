@@ -3,6 +3,7 @@ export interface INews {
     author: string;
     createdAt: Date;
     url: string;
+    id: string;
 }
 
 export function fetchNews(category: string): Promise<INews[]> {
@@ -14,6 +15,7 @@ export function fetchNews(category: string): Promise<INews[]> {
             author: item.author,
             createdAt: new Date(item.created_at),
             url: item.story_url,
+            id: `${item.story_id}_${item.author}`,
           })))
         });
     });
