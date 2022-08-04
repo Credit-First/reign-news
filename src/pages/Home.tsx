@@ -51,7 +51,7 @@ export default function Home() {
           setMaxPage(maxPage);
           setLoading(false);
         })
-        .catch(e => {
+        .catch(() => {
           setNews([]);
           setMaxPage(1);
           setLoading(false);
