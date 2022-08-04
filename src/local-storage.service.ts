@@ -11,9 +11,9 @@ export function getStarList(): INews[] {
 export function getStarListByCategory(category: string, page: number, perPage: number): { data: INews[]; info: IInfo } {
   console.log(page, perPage, page * perPage);
   const list = getStarList();
-  const maxPage = Math.ceil(list.length / perPage);
-  page = Math.min(maxPage, page);
   const data = list.filter(item => item.category === category);
+  const maxPage = Math.ceil(data.length / perPage);
+  page = Math.min(maxPage, page);
   const start = page * perPage;
   const end = start + perPage;
   return { data: data.slice(start, end), info: { maxPage } };
