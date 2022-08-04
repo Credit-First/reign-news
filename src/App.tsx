@@ -1,9 +1,17 @@
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+} from "react-router-dom";
+import Home from "./pages/Home";
+
 function App() {
   return (
-    <div>
-      <p className="text-2xl font-baskerville">Baskerville - Text Demo</p>
-      <p className="text-2xl font-roboto">Roboto - Text Demo</p>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route index element={<Home />} />
+      </Routes>
+  </BrowserRouter>
   );
 }
 
