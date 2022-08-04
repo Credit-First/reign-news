@@ -1,12 +1,13 @@
-const starListKey = 'star-list';
+const START_LIST_KEY = 'star-list';
+const NEWS_CATEGORY_KEY = 'news-category';
 
 export function getStarList(): string[] {
-  const rawList = localStorage.getItem(starListKey) || '[]';
+  const rawList = localStorage.getItem(START_LIST_KEY) || '[]';
   return JSON.parse(rawList);
 }
 
 export function putStarList(list: string[]) {
-  localStorage.setItem(starListKey, JSON.stringify(list));
+  localStorage.setItem(START_LIST_KEY, JSON.stringify(list));
 }
 
 export function addToStarList(id: string): string[] {
@@ -28,4 +29,12 @@ export function removeFromStarList(id: string): string[] {
   list.splice(i, 1);
   putStarList(list);
   return list;
+}
+
+export function getNewsCategory(): string {
+  return localStorage.getItem(NEWS_CATEGORY_KEY) || 'Angular';
+}
+
+export function setNewsCategory(category: string): void {
+  localStorage.setItem(NEWS_CATEGORY_KEY, category);
 }

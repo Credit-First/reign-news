@@ -3,17 +3,18 @@ import { fetchNews, INews } from '../api.service';
 import NewsCard from '../comoponents/NewsCard';
 import DropdownList from '../comoponents/ui-kit/DropdownList';
 import TabControl from "../comoponents/ui-kit/TabControl";
-import { addToStarList, getStarList, removeFromStarList } from '../local-storage.service';
+import { addToStarList, getNewsCategory, getStarList, removeFromStarList, setNewsCategory } from '../local-storage.service';
 
 const newsCategories = ["Angular", "React", "Vue"];
 
 export default function Home() {
   const [tab, setTab] = useState(0);
-  const [category, setCategory] = useState(0);
+  const [category, setCategory] = useState(newsCategories.indexOf(getNewsCategory()));
   const [starList, setStarList] = useState(getStarList());
 
   const [news, setNews] = useState<INews[]>([]);
   useEffect(() => {
+    setNewsCategory(newsCategories[category]);
     fetchNews(newsCategories[category]).then(setNews);
   }, [category]);
 
@@ -25,7 +26,7 @@ export default function Home() {
       list = removeFromStarList(id);
     }
     setStarList(list);
-  }, [])
+  }, []);
 
   return <div className="container mx-auto">
     <header className="px-3 pt-11 pb-10 bg-gradient-to-b from-gray-900 to-white border-b border-slate-50/10">
