@@ -29,7 +29,7 @@ export default function Pagination({ className, page, pageChanged, maxPage }: Pr
   }, [page, handleClick]);
 
   const handleNextClick = useCallback(() => {
-    const nextPage: number = Math.min(maxPage, page + 1);
+    const nextPage: number = Math.min(maxPage - 1, page + 1);
     handleClick(nextPage);
   }, [page, maxPage, handleClick]);
 
